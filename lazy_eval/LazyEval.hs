@@ -9,6 +9,20 @@ fib_worst 1 = 1
 fib_worst 2 = 1
 fib_worst n = fib_worst(n-2) + fib_worst(n-1)
 
+data Fibber = Fibber {fibNum :: Int, fibValue :: Integer}
+makeFibber :: Int -> Fibber
+makeFibber a = Fibber a (fib_worst a)
+instance Eq Fibber where a == b = fibNum a == fibNum b
+instance Ord Fibber where a <= b = fibNum a <= fibNum b
+instance Show Fibber where show a = show . fibNum $ a
+instance Num Fibber where
+    a + b = makeFibber (fibNum a + fibNum b)
+    a * b = makeFibber (fibNum a * fibNum b)
+    abs = makeFibber . abs . fibNum
+    signum = makeFibber . signum . fibNum
+    fromInteger = makeFibber . fromInteger
+    negate = makeFibber . negate . fibNum
+
 fib_worst' :: Int -> Integer
 fib_worst' 0 = trace "fib_worst 0"  0
 fib_worst' 1 = trace "fib_worst 1"  1
@@ -128,4 +142,6 @@ main = do
         "fib_good" -> putStrLn $ "fib_good " ++ show n ++ " = " ++ show (fib_good n)
         "sum_big" -> putStrLn $ "sum_big " ++ show n ++ " = " ++ show (sum_big n)
         "sum_big'" -> putStrLn $ "sum_big'' " ++ show n ++ " = " ++ show (sum_big' n)
+        "split_at_strict" -> putStrLn $ "sum_5_splitAt_10000000_sp" ++ " = " ++ show (sum_5_splitAt_10000000_sp ())
+        "split_at_lazy" -> putStrLn $ "sum_5_splitAt_10000000_lp" ++ " = " ++ show (sum_5_splitAt_10000000_sp ())
         _ -> error "unknown argument"
